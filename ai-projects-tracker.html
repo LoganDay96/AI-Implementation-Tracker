@@ -1,0 +1,1739 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Projects Tracker | Puppy Pages</title>
+    <style>
+        :root {
+            --walmart-blue: #0071ce;
+            --walmart-dark: #004c91;
+            --walmart-yellow: #ffc220;
+            --success: #28a745;
+            --danger: #dc3545;
+            --gray-100: #f8f9fa;
+            --gray-200: #e9ecef;
+            --gray-600: #6c757d;
+            --white: #ffffff;
+            --shadow: 0 4px 20px rgba(0,0,0,0.15);
+            --radius: 12px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--walmart-dark) 0%, var(--walmart-blue) 50%, #0095ff 100%);
+            background-size: 200% 200%;
+            animation: gradientShift 15s ease infinite;
+            min-height: 100vh;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Floating particles */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background: rgba(255, 194, 32, 0.4);
+            border-radius: 50%;
+            animation: float 15s infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-100vh) rotate(720deg); opacity: 0; }
+        }
+
+        .container { max-width: 960px; margin: 0 auto; position: relative; z-index: 1; }
+
+        header {
+            text-align: center;
+            color: var(--white);
+            margin-bottom: 24px;
+            position: relative;
+        }
+
+        header h1 {
+            font-size: 2.2rem;
+            margin-bottom: 8px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            animation: titleGlow 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes titleGlow {
+            from { text-shadow: 2px 2px 4px rgba(0,0,0,0.3), 0 0 10px rgba(255,194,32,0); }
+            to { text-shadow: 2px 2px 4px rgba(0,0,0,0.3), 0 0 20px rgba(255,194,32,0.5); }
+        }
+
+        header p { font-size: 1rem; opacity: 0.9; }
+
+        /* Stats Banner */
+        .stats-banner {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .stat-card {
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(10px);
+            border-radius: var(--radius);
+            padding: 16px;
+            text-align: center;
+            color: var(--white);
+            transition: all 0.3s ease;
+            cursor: default;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px) scale(1.02);
+            background: rgba(255,255,255,0.25);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+        }
+
+        .stat-card .number {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--walmart-yellow);
+            text-shadow: 0 0 10px rgba(255,194,32,0.3);
+        }
+
+        .stat-card:hover .number {
+            animation: numberPop 0.3s ease;
+        }
+
+        @keyframes numberPop {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
+        .stat-card .label { font-size: 0.85rem; opacity: 0.9; }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 4px;
+            margin-bottom: 0;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 14px 20px;
+            border: none;
+            background: rgba(255,255,255,0.2);
+            color: var(--white);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            border-radius: var(--radius) var(--radius) 0 0;
+            transition: all 0.3s ease;
+        }
+
+        .tab-btn:hover { background: rgba(255,255,255,0.3); transform: translateY(-2px); }
+
+        .tab-btn.active {
+            background: var(--white);
+            color: var(--walmart-dark);
+            transform: translateY(0);
+        }
+
+        .tab-btn:focus {
+            outline: 3px solid var(--walmart-yellow);
+            outline-offset: 2px;
+        }
+
+        /* Tab Content */
+        .tab-content {
+            display: none;
+            background: var(--white);
+            border-radius: 0 0 var(--radius) var(--radius);
+            padding: 32px;
+            box-shadow: var(--shadow);
+            animation: fadeSlideIn 0.4s ease;
+        }
+
+        @keyframes fadeSlideIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .tab-content.active { display: block; }
+
+        /* Form Styles */
+        .form-section {
+            margin-bottom: 28px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .form-section:last-of-type { border-bottom: none; }
+
+        .form-section h2 {
+            color: var(--walmart-dark);
+            font-size: 1.15rem;
+            margin-bottom: 16px;
+            position: relative;
+            display: inline-block;
+        }
+
+        .form-section h2::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--walmart-blue), var(--walmart-yellow));
+            transition: width 0.3s ease;
+        }
+
+        .form-section:hover h2::after {
+            width: 100%;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        @media (max-width: 600px) {
+            .form-row { grid-template-columns: 1fr; }
+        }
+
+        .form-group { margin-bottom: 16px; }
+
+        label {
+            display: block;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 6px;
+            font-size: 0.9rem;
+        }
+
+        .required { color: var(--danger); }
+
+        input[type="text"],
+        input[type="date"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 10px 14px;
+            border: 2px solid var(--gray-200);
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: inherit;
+            transition: all 0.3s ease;
+            background: #fff;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--walmart-blue);
+            box-shadow: 0 0 0 4px rgba(0, 113, 206, 0.15), 0 4px 12px rgba(0,113,206,0.1);
+            transform: translateY(-1px);
+        }
+
+        input:hover, select:hover, textarea:hover {
+            border-color: var(--walmart-blue);
+        }
+
+        textarea { resize: vertical; min-height: 100px; }
+
+        .checkbox-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--gray-100);
+            padding: 10px 14px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 2px solid transparent;
+        }
+
+        .checkbox-item:hover { 
+            background: #e3f2fd; 
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,113,206,0.15);
+        }
+
+        .checkbox-item:has(input:checked) {
+            background: #e3f2fd;
+            border-color: var(--walmart-blue);
+        }
+
+        .checkbox-item input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            accent-color: var(--walmart-blue);
+            transition: transform 0.2s ease;
+        }
+
+        .checkbox-item input[type="checkbox"]:checked {
+            animation: checkPop 0.3s ease;
+        }
+
+        @keyframes checkPop {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.3); }
+            100% { transform: scale(1); }
+        }
+
+        .checkbox-item label {
+            margin: 0;
+            font-weight: normal;
+            cursor: pointer;
+        }
+
+        /* Buttons */
+        .btn-group {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 24px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255,255,255,0.3);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.6s ease, height 0.6s ease;
+        }
+
+        .btn:active::after {
+            width: 300px;
+            height: 300px;
+        }
+
+        .btn:focus {
+            outline: 3px solid var(--walmart-yellow);
+            outline-offset: 2px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--walmart-dark), var(--walmart-blue));
+            color: var(--white);
+            box-shadow: 0 4px 15px rgba(0,113,206,0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,76,145,0.4);
+        }
+
+        .btn-secondary {
+            background: var(--gray-600);
+            color: var(--white);
+        }
+
+        .btn-secondary:hover { background: #5a6268; transform: translateY(-2px); }
+
+        .btn-danger {
+            background: var(--danger);
+            color: var(--white);
+        }
+
+        .btn-danger:hover { background: #c82333; transform: translateY(-2px); }
+
+        .btn-success {
+            background: var(--success);
+            color: var(--white);
+        }
+
+        .btn-success:hover { background: #218838; transform: translateY(-2px); }
+
+        .btn-sm {
+            padding: 8px 16px;
+            font-size: 0.9rem;
+        }
+
+        /* Projects List */
+        .search-bar {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .search-bar input {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .search-bar select { min-width: 150px; }
+
+        .project-card {
+            background: var(--gray-100);
+            border-radius: var(--radius);
+            padding: 20px;
+            margin-bottom: 16px;
+            border-left: 4px solid var(--walmart-blue);
+            transition: all 0.3s ease;
+            animation: cardSlideIn 0.5s ease backwards;
+        }
+
+        .project-card:nth-child(1) { animation-delay: 0s; }
+        .project-card:nth-child(2) { animation-delay: 0.1s; }
+        .project-card:nth-child(3) { animation-delay: 0.2s; }
+        .project-card:nth-child(4) { animation-delay: 0.3s; }
+        .project-card:nth-child(5) { animation-delay: 0.4s; }
+
+        @keyframes cardSlideIn {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .project-card:hover { 
+            box-shadow: 0 8px 30px rgba(0,113,206,0.2); 
+            transform: translateY(-4px);
+            border-left-color: var(--walmart-yellow);
+        }
+
+        .project-card h3 {
+            color: var(--walmart-dark);
+            margin-bottom: 12px;
+            font-size: 1.15rem;
+        }
+
+        .project-meta {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            margin-bottom: 12px;
+            font-size: 0.9rem;
+            color: var(--gray-600);
+        }
+
+        .project-detail { margin-bottom: 8px; line-height: 1.5; }
+
+        .project-detail strong { color: #444; }
+
+        .tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin: 12px 0;
+        }
+
+        .tag {
+            background: var(--walmart-blue);
+            color: var(--white);
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            transition: all 0.2s ease;
+        }
+
+        .tag:hover {
+            transform: scale(1.05);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+
+        .tag.status-active { background: var(--success); }
+        .tag.status-pilot { background: #17a2b8; }
+        .tag.status-completed { background: var(--gray-600); }
+        .tag.status-planned { background: #fd7e14; }
+
+        .project-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 16px;
+            padding-top: 12px;
+            border-top: 1px solid var(--gray-200);
+        }
+
+        .no-projects {
+            text-align: center;
+            color: var(--gray-600);
+            padding: 40px;
+            font-style: italic;
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            padding: 14px 20px;
+            border-radius: 8px;
+            color: var(--white);
+            font-weight: 500;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+            transform: translateX(150%);
+            transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            z-index: 1000;
+        }
+
+        .toast.show { transform: translateX(0); }
+        .toast.success { background: linear-gradient(135deg, #28a745, #20c997); }
+        .toast.error { background: linear-gradient(135deg, #dc3545, #e83e8c); }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(4px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            z-index: 1100;
+            animation: fadeIn 0.2s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-overlay.show { display: flex; }
+
+        .modal {
+            background: var(--white);
+            border-radius: var(--radius);
+            padding: 24px;
+            max-width: 400px;
+            width: 100%;
+            animation: modalPop 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        @keyframes modalPop {
+            from { opacity: 0; transform: scale(0.8); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .modal h3 { color: var(--walmart-dark); margin-bottom: 12px; }
+        .modal p { color: #555; margin-bottom: 20px; }
+
+        /* Export Section */
+        .export-section {
+            margin-top: 24px;
+            padding-top: 20px;
+            border-top: 2px solid var(--gray-200);
+        }
+
+        .export-section h3 {
+            color: var(--walmart-dark);
+            margin-bottom: 12px;
+            font-size: 1rem;
+        }
+
+        /* Visually hidden for screen readers */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0,0,0,0);
+            border: 0;
+        }
+
+        @media print {
+            body { background: white; padding: 0; }
+            .tabs, .btn, .search-bar, .project-actions, .export-section { display: none !important; }
+            .tab-content { display: block !important; box-shadow: none; }
+            .project-card { break-inside: avoid; }
+        }
+
+        /* Confetti */
+        .confetti-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9999;
+            overflow: hidden;
+        }
+
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            opacity: 0;
+        }
+
+        @keyframes confetti-fall {
+            0% { transform: translateY(-100px) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+        }
+
+        /* Leaderboard */
+        .leaderboard-item {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 16px;
+            background: var(--gray-100);
+            border-radius: var(--radius);
+            margin-bottom: 12px;
+            transition: all 0.3s ease;
+            animation: leaderboardSlide 0.5s ease backwards;
+        }
+
+        .leaderboard-item:nth-child(1) { animation-delay: 0s; }
+        .leaderboard-item:nth-child(2) { animation-delay: 0.1s; }
+        .leaderboard-item:nth-child(3) { animation-delay: 0.2s; }
+        .leaderboard-item:nth-child(4) { animation-delay: 0.3s; }
+        .leaderboard-item:nth-child(5) { animation-delay: 0.4s; }
+
+        @keyframes leaderboardSlide {
+            from { opacity: 0; transform: translateX(-30px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .leaderboard-item:hover {
+            transform: translateX(8px);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            background: #fff;
+        }
+
+        .leaderboard-rank {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--walmart-blue);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.1rem;
+            transition: transform 0.3s ease;
+        }
+
+        .leaderboard-item:hover .leaderboard-rank {
+            transform: scale(1.1) rotate(5deg);
+        }
+
+        .leaderboard-rank.gold { 
+            background: linear-gradient(135deg, #ffd700, #ffb300); 
+            box-shadow: 0 0 20px rgba(255,215,0,0.5);
+            animation: goldGlow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes goldGlow {
+            from { box-shadow: 0 0 10px rgba(255,215,0,0.3); }
+            to { box-shadow: 0 0 25px rgba(255,215,0,0.6); }
+        }
+
+        .leaderboard-rank.silver { 
+            background: linear-gradient(135deg, #c0c0c0, #a8a8a8); 
+            box-shadow: 0 0 15px rgba(192,192,192,0.4);
+        }
+        .leaderboard-rank.bronze { 
+            background: linear-gradient(135deg, #cd7f32, #b87333); 
+            box-shadow: 0 0 15px rgba(205,127,50,0.4);
+        }
+
+        .leaderboard-info { flex: 1; }
+        .leaderboard-name { font-weight: 600; color: var(--walmart-dark); font-size: 1.05rem; }
+        .leaderboard-dept { font-size: 0.85rem; color: var(--gray-600); }
+
+        .leaderboard-count {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--walmart-blue);
+        }
+
+        .leaderboard-label {
+            font-size: 0.75rem;
+            color: var(--gray-600);
+            text-align: right;
+        }
+
+        /* Animated numbers */
+        .stat-card .number {
+            transition: transform 0.3s ease;
+        }
+
+        .stat-card .number.counting {
+            transform: scale(1.1);
+        }
+
+        /* Aurora Borealis */
+        .aurora {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .aurora-wave {
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            top: -50%;
+            left: -50%;
+            background: linear-gradient(
+                180deg,
+                transparent 0%,
+                rgba(0, 113, 206, 0.1) 20%,
+                rgba(0, 149, 255, 0.15) 35%,
+                rgba(255, 194, 32, 0.1) 50%,
+                rgba(0, 200, 150, 0.12) 65%,
+                rgba(0, 113, 206, 0.08) 80%,
+                transparent 100%
+            );
+            animation: aurora-move 8s ease-in-out infinite;
+            filter: blur(40px);
+        }
+
+        .aurora-wave:nth-child(2) {
+            animation-delay: -2s;
+            animation-duration: 10s;
+            opacity: 0.7;
+        }
+
+        .aurora-wave:nth-child(3) {
+            animation-delay: -4s;
+            animation-duration: 12s;
+            opacity: 0.5;
+        }
+
+        @keyframes aurora-move {
+            0%, 100% {
+                transform: translateY(0) rotate(0deg) scale(1);
+            }
+            25% {
+                transform: translateY(-10%) rotate(3deg) scale(1.05);
+            }
+            50% {
+                transform: translateY(-5%) rotate(-2deg) scale(1.1);
+            }
+            75% {
+                transform: translateY(-15%) rotate(4deg) scale(1.02);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Aurora Borealis background -->
+    <div class="aurora">
+        <div class="aurora-wave"></div>
+        <div class="aurora-wave"></div>
+        <div class="aurora-wave"></div>
+    </div>
+
+    <!-- Floating particles background -->
+    <div class="particles" id="particles"></div>
+
+    <div class="container">
+        <header>
+            <h1>Corporate Functions AI Implementation Tracker</h1>
+        </header>
+
+        <div class="stats-banner" id="statsBanner">
+            <div class="stat-card">
+                <div class="number" id="totalCount">0</div>
+                <div class="label">Total Projects</div>
+            </div>
+            <div class="stat-card">
+                <div class="number" id="activeCount">0</div>
+                <div class="label">Active</div>
+            </div>
+            <div class="stat-card">
+                <div class="number" id="codePuppyCount">0</div>
+                <div class="label">Code Puppy</div>
+            </div>
+            <div class="stat-card">
+                <div class="number" id="chatGPTCount">0</div>
+                <div class="label">ChatGPT</div>
+            </div>
+        </div>
+
+        <div class="tabs" role="tablist">
+            <button class="tab-btn active" role="tab" aria-selected="true" aria-controls="addTab" id="addTabBtn" onclick="switchTab('add')">
+                Add New Project
+            </button>
+            <button class="tab-btn" role="tab" aria-selected="false" aria-controls="viewTab" id="viewTabBtn" onclick="switchTab('view')">
+                View Projects
+            </button>
+            <button class="tab-btn" role="tab" aria-selected="false" aria-controls="leaderboardTab" id="leaderboardTabBtn" onclick="switchTab('leaderboard')">
+                Leaderboard
+            </button>
+        </div>
+
+        <!-- ADD PROJECT TAB -->
+        <div class="tab-content active" id="addTab" role="tabpanel" aria-labelledby="addTabBtn">
+            <form id="projectForm">
+                <div class="form-section">
+                    <h2>Basic Information</h2>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="projectName">Project Name <span class="required">*</span></label>
+                            <input type="text" id="projectName" required placeholder="e.g., Automated Report Generator">
+                        </div>
+                        <div class="form-group">
+                            <label for="dateImplemented">Date Implemented <span class="required">*</span></label>
+                            <input type="date" id="dateImplemented" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="teamMember">Team Member <span class="required">*</span></label>
+                            <input type="text" id="teamMember" required placeholder="Your name">
+                        </div>
+                        <div class="form-group">
+                            <label for="department">Department <span class="required">*</span></label>
+                            <select id="department" required>
+                                <option value="">Select department</option>
+                                <option value="EDLC">EDLC (Everyday Low Cost)</option>
+                                <option value="Corporate FP&A">Corporate FP&A</option>
+                                <option value="Benefits">Benefits</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h2>Problem & Solution</h2>
+                    <div class="form-group">
+                        <label for="problemStatement">Problem Statement <span class="required">*</span></label>
+                        <textarea id="problemStatement" required placeholder="What problem were you trying to solve?"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>AI Tools Used <span class="required">*</span></label>
+                        <div class="checkbox-group">
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="toolCodePuppy" value="Code Puppy">
+                                <label for="toolCodePuppy">Code Puppy 🐶</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="toolChatGPT" value="ChatGPT">
+                                <label for="toolChatGPT">ChatGPT</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="toolVSCode" value="VS Code">
+                                <label for="toolVSCode">VS Code</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="toolOther" value="Other">
+                                <label for="toolOther">Other</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="solutionDescription">Solution Description <span class="required">*</span></label>
+                        <textarea id="solutionDescription" required placeholder="How did you use AI to solve this problem?"></textarea>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h2>Impact & Results</h2>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="timeSaved">Time Saved</label>
+                            <select id="timeSaved">
+                                <option value="">Select time savings</option>
+                                <option value="< 1 hour/week">Less than 1 hour/week</option>
+                                <option value="1-5 hours/week">1-5 hours/week</option>
+                                <option value="5-10 hours/week">5-10 hours/week</option>
+                                <option value="10+ hours/week">10+ hours/week</option>
+                                <option value="One-time savings">One-time project savings</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="impactLevel">Impact Level</label>
+                            <select id="impactLevel">
+                                <option value="">Select impact level</option>
+                                <option value="Individual">Individual (just me)</option>
+                                <option value="Team">Team-wide</option>
+                                <option value="Department">Department-wide</option>
+                                <option value="Organization">Organization-wide</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="outcomes">Measurable Outcomes</label>
+                        <textarea id="outcomes" placeholder="Any quantifiable results? (e.g., 50% faster, $10K saved, 1000 records processed)"></textarea>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h2>Additional Info</h2>
+                    <div class="form-group">
+                        <label for="lessons">Lessons Learned / Tips</label>
+                        <textarea id="lessons" placeholder="What would you tell a teammate who wants to do something similar?"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="status">Status</label>
+                        <select id="status">
+                            <option value="Active">Active - Currently in use</option>
+                            <option value="Pilot">Pilot - Testing phase</option>
+                            <option value="Completed">Completed - One-time project</option>
+                            <option value="Planned">Planned - In development</option>
+                        </select>
+                    </div>
+                </div>
+
+                <input type="hidden" id="editingId" value="">
+
+                <div class="btn-group">
+                    <button type="submit" class="btn btn-primary" id="submitBtn">Save Project</button>
+                    <button type="button" class="btn btn-secondary" onclick="clearForm()">Clear Form</button>
+                    <button type="button" class="btn btn-danger" id="cancelEditBtn" onclick="cancelEdit()" style="display:none;">Cancel Edit</button>
+                    <button type="button" class="btn btn-sm" style="background:#6f42c1;color:#fff;" onclick="devFill()">Dev Fill</button>
+                </div>
+            </form>
+
+            <div class="export-section">
+                <h3>Team Sync (Shared Folder)</h3>
+                <p style="font-size: 0.85rem; color: var(--gray-600); margin-bottom: 12px;">Connect to the shared Entries folder to see everyone's submissions</p>
+                <div class="btn-group">
+                    <button type="button" class="btn btn-success btn-sm" onclick="connectEntriesFolder()" id="connectFolderBtn">Connect to Entries Folder</button>
+                    <button type="button" class="btn btn-secondary btn-sm" onclick="loadAllEntries()" id="loadEntriesBtn" disabled>Load All Entries</button>
+                    <button type="button" class="btn btn-primary btn-sm" onclick="exportPDF()">Generate PDF Report</button>
+                </div>
+                <p id="syncStatus" style="font-size: 0.8rem; color: var(--gray-600); margin-top: 8px;">Click "Connect to Entries Folder" to enable team sync</p>
+                <p id="folderPath" style="font-size: 0.75rem; color: var(--walmart-blue); margin-top: 4px;"></p>
+            </div>
+        </div>
+
+        <!-- VIEW PROJECTS TAB -->
+        <div class="tab-content" id="viewTab" role="tabpanel" aria-labelledby="viewTabBtn">
+            <div class="search-bar">
+                <input type="text" id="searchInput" placeholder="Search projects..." onkeyup="filterProjects()" aria-label="Search projects">
+                <select id="filterStatus" onchange="filterProjects()" aria-label="Filter by status">
+                    <option value="">All Statuses</option>
+                    <option value="Active">Active</option>
+                    <option value="Pilot">Pilot</option>
+                    <option value="Completed">Completed</option>
+                    <option value="Planned">Planned</option>
+                </select>
+                <select id="filterDepartment" onchange="filterProjects()" aria-label="Filter by department">
+                    <option value="">All Departments</option>
+                    <option value="EDLC">EDLC</option>
+                    <option value="Corporate FP&A">Corporate FP&A</option>
+                    <option value="Benefits">Benefits</option>
+                    <option value="Other">Other</option>
+                </select>
+            </div>
+
+            <div id="projectsList">
+                <p class="no-projects">No projects yet. Add your first AI implementation!</p>
+            </div>
+        </div>
+
+        <!-- LEADERBOARD TAB -->
+        <div class="tab-content" id="leaderboardTab" role="tabpanel" aria-labelledby="leaderboardTabBtn">
+            <h2 style="color: var(--walmart-dark); margin-bottom: 20px;">Top Contributors</h2>
+            <div id="leaderboardList">
+                <p class="no-projects">No contributions yet. Be the first!</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast" role="alert" aria-live="polite"></div>
+
+    <!-- Delete Confirmation Modal -->
+    <div class="modal-overlay" id="deleteModal" aria-hidden="true">
+        <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+            <h3 id="modalTitle">Delete Project?</h3>
+            <p>This action cannot be undone. The project will be permanently removed.</p>
+            <div class="btn-group" style="justify-content: flex-end;">
+                <button type="button" class="btn btn-secondary btn-sm" onclick="closeDeleteModal()">Cancel</button>
+                <button type="button" class="btn btn-danger btn-sm" onclick="confirmDelete()">Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ===== STATE =====
+        const STORAGE_KEY = 'aiProjectsTracker';
+        let pendingDeleteId = null;
+
+        // ===== INITIALIZATION =====
+        document.addEventListener('DOMContentLoaded', async () => {
+            document.getElementById('dateImplemented').valueAsDate = new Date();
+            
+            renderProjects();
+            updateStats(true);
+            createParticles();
+            
+            // Show instructions for first-time users
+            if (getProjects().length === 0) {
+                updateSyncStatus('Connect to the Entries folder to load team submissions', 'info');
+            }
+        });
+
+        // ===== FLOATING PARTICLES =====
+        function createParticles() {
+            const container = document.getElementById('particles');
+            const colors = ['rgba(255,194,32,0.4)', 'rgba(0,113,206,0.3)', 'rgba(255,255,255,0.2)'];
+            
+            for (let i = 0; i < 20; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDuration = (Math.random() * 20 + 10) + 's';
+                particle.style.animationDelay = (Math.random() * 15) + 's';
+                particle.style.background = colors[Math.floor(Math.random() * colors.length)];
+                particle.style.width = (Math.random() * 6 + 3) + 'px';
+                particle.style.height = particle.style.width;
+                container.appendChild(particle);
+            }
+        }
+
+        document.getElementById('projectForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            saveProject();
+        });
+
+        // ===== TAB SWITCHING =====
+        function switchTab(tab) {
+            const addBtn = document.getElementById('addTabBtn');
+            const viewBtn = document.getElementById('viewTabBtn');
+            const leaderboardBtn = document.getElementById('leaderboardTabBtn');
+            const addTab = document.getElementById('addTab');
+            const viewTab = document.getElementById('viewTab');
+            const leaderboardTab = document.getElementById('leaderboardTab');
+
+            // Reset all tabs
+            [addBtn, viewBtn, leaderboardBtn].forEach(btn => {
+                btn.classList.remove('active');
+                btn.setAttribute('aria-selected', 'false');
+            });
+            [addTab, viewTab, leaderboardTab].forEach(t => t.classList.remove('active'));
+
+            if (tab === 'add') {
+                addBtn.classList.add('active');
+                addBtn.setAttribute('aria-selected', 'true');
+                addTab.classList.add('active');
+            } else if (tab === 'view') {
+                viewBtn.classList.add('active');
+                viewBtn.setAttribute('aria-selected', 'true');
+                viewTab.classList.add('active');
+                filterProjects();
+            } else if (tab === 'leaderboard') {
+                leaderboardBtn.classList.add('active');
+                leaderboardBtn.setAttribute('aria-selected', 'true');
+                leaderboardTab.classList.add('active');
+                renderLeaderboard();
+            }
+        }
+
+        // ===== DATA MANAGEMENT =====
+        let entriesFolderHandle = null;
+
+        function getProjects() {
+            try {
+                const data = localStorage.getItem(STORAGE_KEY);
+                return data ? JSON.parse(data) : [];
+            } catch { return []; }
+        }
+
+        function saveProjects(projects) {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(projects));
+        }
+
+        // ===== SHARED FOLDER APPROACH =====
+        // Connect to the Entries folder using File System Access API
+        async function connectEntriesFolder() {
+            try {
+                if (!('showDirectoryPicker' in window)) {
+                    showToast('Your browser does not support folder access. Use Chrome or Edge.', 'error');
+                    return;
+                }
+                
+                entriesFolderHandle = await window.showDirectoryPicker({
+                    mode: 'readwrite',
+                    startIn: 'documents'
+                });
+                
+                // Store folder name for display
+                document.getElementById('folderPath').textContent = `Connected to: ${entriesFolderHandle.name}`;
+                document.getElementById('connectFolderBtn').textContent = 'Reconnect Folder';
+                document.getElementById('loadEntriesBtn').disabled = false;
+                
+                updateSyncStatus('Folder connected! Click "Load All Entries" to see team submissions.', 'success');
+                showToast('Folder connected successfully!', 'success');
+                
+                // Auto-load entries after connecting
+                await loadAllEntries();
+                
+            } catch (e) {
+                if (e.name !== 'AbortError') {
+                    showToast('Error connecting to folder', 'error');
+                    console.error(e);
+                }
+            }
+        }
+
+        // Load all JSON files from the Entries folder
+        async function loadAllEntries() {
+            if (!entriesFolderHandle) {
+                showToast('Please connect to the Entries folder first', 'error');
+                return;
+            }
+            
+            try {
+                const allProjects = [];
+                const seenIds = new Set();
+                let fileCount = 0;
+                
+                // Iterate through all files in the folder
+                for await (const entry of entriesFolderHandle.values()) {
+                    if (entry.kind === 'file' && entry.name.endsWith('.json')) {
+                        try {
+                            const file = await entry.getFile();
+                            const content = await file.text();
+                            const project = JSON.parse(content);
+                            
+                            // Handle both single projects and arrays
+                            const projects = Array.isArray(project) ? project : [project];
+                            
+                            for (const p of projects) {
+                                if (p.id && !seenIds.has(p.id)) {
+                                    seenIds.add(p.id);
+                                    allProjects.push(p);
+                                }
+                            }
+                            fileCount++;
+                        } catch (parseErr) {
+                            console.warn(`Skipping invalid file: ${entry.name}`);
+                        }
+                    }
+                }
+                
+                // Sort by date (newest first)
+                allProjects.sort((a, b) => new Date(b.updatedAt || b.dateImplemented) - new Date(a.updatedAt || a.dateImplemented));
+                
+                // Save to localStorage and refresh UI
+                saveProjects(allProjects);
+                renderProjects();
+                updateStats(true);
+                renderLeaderboard();
+                
+                updateSyncStatus(`Loaded ${allProjects.length} projects from ${fileCount} files`, 'success');
+                showToast(`Loaded ${allProjects.length} projects from team!`, 'success');
+                
+            } catch (e) {
+                showToast('Error reading entries folder', 'error');
+                console.error(e);
+            }
+        }
+
+        // Save a project as an individual JSON file
+        async function saveProjectToFolder(project) {
+            if (!entriesFolderHandle) {
+                // Just save to localStorage if folder not connected
+                return false;
+            }
+            
+            try {
+                // Create unique filename: timestamp-name.json
+                const safeName = project.teamMember.replace(/[^a-zA-Z0-9]/g, '-').substring(0, 20);
+                const timestamp = new Date().toISOString().replace(/[:.]/g, '-').substring(0, 19);
+                const fileName = `entry-${timestamp}-${safeName}.json`;
+                
+                // Create file in the folder
+                const fileHandle = await entriesFolderHandle.getFileHandle(fileName, { create: true });
+                const writable = await fileHandle.createWritable();
+                await writable.write(JSON.stringify(project, null, 2));
+                await writable.close();
+                
+                updateSyncStatus(`Saved to: ${fileName}`, 'success');
+                return true;
+                
+            } catch (e) {
+                console.error('Error saving to folder:', e);
+                return false;
+            }
+        }
+
+        function updateSyncStatus(message, type) {
+            const el = document.getElementById('syncStatus');
+            if (el) {
+                el.textContent = message;
+                el.style.color = type === 'success' ? 'var(--success)' : 
+                                 type === 'error' ? 'var(--danger)' : 'var(--gray-600)';
+            }
+        }
+
+        function getSelectedTools() {
+            const tools = [];
+            if (document.getElementById('toolCodePuppy').checked) tools.push('Code Puppy');
+            if (document.getElementById('toolChatGPT').checked) tools.push('ChatGPT');
+            if (document.getElementById('toolVSCode').checked) tools.push('VS Code');
+            if (document.getElementById('toolOther').checked) tools.push('Other');
+            return tools;
+        }
+
+        function setSelectedTools(tools) {
+            document.getElementById('toolCodePuppy').checked = tools.includes('Code Puppy');
+            document.getElementById('toolChatGPT').checked = tools.includes('ChatGPT');
+            document.getElementById('toolVSCode').checked = tools.includes('VS Code');
+            document.getElementById('toolOther').checked = tools.includes('Other');
+        }
+
+        // ===== FORM OPERATIONS =====
+        async function saveProject() {
+            const tools = getSelectedTools();
+            if (tools.length === 0) {
+                showToast('Please select at least one AI tool', 'error');
+                return;
+            }
+
+            const project = {
+                id: document.getElementById('editingId').value || Date.now(),
+                projectName: document.getElementById('projectName').value.trim(),
+                dateImplemented: document.getElementById('dateImplemented').value,
+                teamMember: document.getElementById('teamMember').value.trim(),
+                department: document.getElementById('department').value,
+                problemStatement: document.getElementById('problemStatement').value.trim(),
+                tools: tools,
+                solutionDescription: document.getElementById('solutionDescription').value.trim(),
+                timeSaved: document.getElementById('timeSaved').value,
+                impactLevel: document.getElementById('impactLevel').value,
+                outcomes: document.getElementById('outcomes').value.trim(),
+                lessons: document.getElementById('lessons').value.trim(),
+                status: document.getElementById('status').value,
+                updatedAt: new Date().toISOString()
+            };
+
+            const projects = getProjects();
+            const editingId = document.getElementById('editingId').value;
+
+            if (editingId) {
+                const idx = projects.findIndex(p => p.id == editingId);
+                if (idx !== -1) {
+                    project.createdAt = projects[idx].createdAt;
+                    projects[idx] = project;
+                }
+                showToast('Project updated successfully!', 'success');
+                launchConfetti();
+            } else {
+                project.id = Date.now();
+                project.createdAt = new Date().toISOString();
+                projects.unshift(project);
+                
+                // Save to shared folder if connected
+                const savedToFolder = await saveProjectToFolder(project);
+                if (savedToFolder) {
+                    showToast('Project saved to shared folder!', 'success');
+                } else {
+                    showToast('Project saved locally! Connect to Entries folder to share with team.', 'success');
+                }
+                launchConfetti();
+            }
+
+            saveProjects(projects);
+            clearForm();
+            renderProjects();
+            updateStats(true);
+        }
+
+        function clearForm() {
+            document.getElementById('projectForm').reset();
+            document.getElementById('editingId').value = '';
+            document.getElementById('dateImplemented').valueAsDate = new Date();
+            document.getElementById('cancelEditBtn').style.display = 'none';
+            document.getElementById('submitBtn').textContent = '💾 Save Project';
+        }
+
+        function editProject(id) {
+            const projects = getProjects();
+            const project = projects.find(p => p.id == id);
+            if (!project) return;
+
+            document.getElementById('editingId').value = project.id;
+            document.getElementById('projectName').value = project.projectName;
+            document.getElementById('dateImplemented').value = project.dateImplemented;
+            document.getElementById('teamMember').value = project.teamMember;
+            document.getElementById('department').value = project.department;
+            document.getElementById('problemStatement').value = project.problemStatement;
+            setSelectedTools(project.tools || []);
+            document.getElementById('solutionDescription').value = project.solutionDescription;
+            document.getElementById('timeSaved').value = project.timeSaved || '';
+            document.getElementById('impactLevel').value = project.impactLevel || '';
+            document.getElementById('outcomes').value = project.outcomes || '';
+            document.getElementById('lessons').value = project.lessons || '';
+            document.getElementById('status').value = project.status || 'Active';
+
+            document.getElementById('cancelEditBtn').style.display = 'inline-block';
+            document.getElementById('submitBtn').textContent = 'Update Project';
+            switchTab('add');
+            document.getElementById('projectName').focus();
+        }
+
+        function cancelEdit() {
+            clearForm();
+            showToast('Edit cancelled', 'success');
+        }
+
+        // ===== DEV HELPER =====
+        function devFill() {
+            document.getElementById('projectName').value = 'Test AI Project ' + Math.floor(Math.random() * 1000);
+            document.getElementById('dateImplemented').valueAsDate = new Date();
+            document.getElementById('teamMember').value = 'Test Developer';
+            document.getElementById('department').value = 'EDLC';
+            document.getElementById('problemStatement').value = 'Manual data entry was taking too long and prone to errors.';
+            document.getElementById('toolCodePuppy').checked = true;
+            document.getElementById('toolChatGPT').checked = true;
+            document.getElementById('solutionDescription').value = 'Used AI to automate the data processing pipeline and generate reports automatically.';
+            document.getElementById('timeSaved').value = '1-5 hours/week';
+            document.getElementById('impactLevel').value = 'Team';
+            document.getElementById('outcomes').value = '50% reduction in processing time, zero manual errors.';
+            document.getElementById('lessons').value = 'Start small, iterate often, and validate outputs.';
+            document.getElementById('status').value = 'Active';
+            showToast('Form auto-filled for testing', 'success');
+        }
+
+        // ===== DELETE OPERATIONS =====
+        function deleteProject(id) {
+            pendingDeleteId = id;
+            document.getElementById('deleteModal').classList.add('show');
+            document.getElementById('deleteModal').setAttribute('aria-hidden', 'false');
+        }
+
+        function closeDeleteModal() {
+            pendingDeleteId = null;
+            document.getElementById('deleteModal').classList.remove('show');
+            document.getElementById('deleteModal').setAttribute('aria-hidden', 'true');
+        }
+
+        function confirmDelete() {
+            if (!pendingDeleteId) return;
+            let projects = getProjects();
+            projects = projects.filter(p => p.id != pendingDeleteId);
+            saveProjects(projects);
+            closeDeleteModal();
+            renderProjects();
+            updateStats();
+            showToast('Project deleted', 'success');
+        }
+
+        // ===== RENDERING =====
+        function renderProjects() {
+            const projects = getProjects();
+            const container = document.getElementById('projectsList');
+
+            if (projects.length === 0) {
+                container.innerHTML = '<p class="no-projects">No projects yet. Add your first AI implementation!</p>';
+                return;
+            }
+
+            container.innerHTML = projects.map(p => `
+                <article class="project-card">
+                    <h3>${escapeHtml(p.projectName)}</h3>
+                    <div class="project-meta">
+                        <span>${escapeHtml(p.teamMember)}</span>
+                        <span>${escapeHtml(p.department)}</span>
+                        <span>${formatDate(p.dateImplemented)}</span>
+                    </div>
+                    <div class="tags">
+                        <span class="tag status-${p.status?.toLowerCase() || 'active'}">${escapeHtml(p.status || 'Active')}</span>
+                        ${(p.tools || []).map(t => `<span class="tag">${escapeHtml(t)}</span>`).join('')}
+                    </div>
+                    <div class="project-detail"><strong>Problem:</strong> ${escapeHtml(p.problemStatement)}</div>
+                    <div class="project-detail"><strong>Solution:</strong> ${escapeHtml(p.solutionDescription)}</div>
+                    ${p.timeSaved ? `<div class="project-detail"><strong>Time Saved:</strong> ${escapeHtml(p.timeSaved)}</div>` : ''}
+                    ${p.outcomes ? `<div class="project-detail"><strong>Outcomes:</strong> ${escapeHtml(p.outcomes)}</div>` : ''}
+                    ${p.lessons ? `<div class="project-detail"><strong>Tips:</strong> ${escapeHtml(p.lessons)}</div>` : ''}
+                    <div class="project-actions">
+                        <button class="btn btn-primary btn-sm" onclick="editProject(${p.id})">Edit</button>
+                        <button class="btn btn-danger btn-sm" onclick="deleteProject(${p.id})">Delete</button>
+                    </div>
+                </article>
+            `).join('');
+        }
+
+        function filterProjects() {
+            const search = document.getElementById('searchInput').value.toLowerCase();
+            const status = document.getElementById('filterStatus').value;
+            const dept = document.getElementById('filterDepartment').value;
+
+            let projects = getProjects();
+
+            if (search) {
+                projects = projects.filter(p =>
+                    p.projectName.toLowerCase().includes(search) ||
+                    p.teamMember.toLowerCase().includes(search) ||
+                    p.problemStatement.toLowerCase().includes(search) ||
+                    p.solutionDescription.toLowerCase().includes(search)
+                );
+            }
+
+            if (status) {
+                projects = projects.filter(p => p.status === status);
+            }
+
+            if (dept) {
+                projects = projects.filter(p => p.department === dept);
+            }
+
+            const container = document.getElementById('projectsList');
+            if (projects.length === 0) {
+                container.innerHTML = '<p class="no-projects">No projects match your filters.</p>';
+                return;
+            }
+
+            container.innerHTML = projects.map(p => `
+                <article class="project-card">
+                    <h3>${escapeHtml(p.projectName)}</h3>
+                    <div class="project-meta">
+                        <span>${escapeHtml(p.teamMember)}</span>
+                        <span>${escapeHtml(p.department)}</span>
+                        <span>${formatDate(p.dateImplemented)}</span>
+                    </div>
+                    <div class="tags">
+                        <span class="tag status-${p.status?.toLowerCase() || 'active'}">${escapeHtml(p.status || 'Active')}</span>
+                        ${(p.tools || []).map(t => `<span class="tag">${escapeHtml(t)}</span>`).join('')}
+                    </div>
+                    <div class="project-detail"><strong>Problem:</strong> ${escapeHtml(p.problemStatement)}</div>
+                    <div class="project-detail"><strong>Solution:</strong> ${escapeHtml(p.solutionDescription)}</div>
+                    ${p.timeSaved ? `<div class="project-detail"><strong>Time Saved:</strong> ${escapeHtml(p.timeSaved)}</div>` : ''}
+                    ${p.outcomes ? `<div class="project-detail"><strong>Outcomes:</strong> ${escapeHtml(p.outcomes)}</div>` : ''}
+                    ${p.lessons ? `<div class="project-detail"><strong>Tips:</strong> ${escapeHtml(p.lessons)}</div>` : ''}
+                    <div class="project-actions">
+                        <button class="btn btn-primary btn-sm" onclick="editProject(${p.id})">Edit</button>
+                        <button class="btn btn-danger btn-sm" onclick="deleteProject(${p.id})">Delete</button>
+                    </div>
+                </article>
+            `).join('');
+        }
+
+        function updateStats(animate = false) {
+            const projects = getProjects();
+            const stats = {
+                totalCount: projects.length,
+                activeCount: projects.filter(p => p.status === 'Active').length,
+                codePuppyCount: projects.filter(p => (p.tools || []).includes('Code Puppy')).length,
+                chatGPTCount: projects.filter(p => (p.tools || []).includes('ChatGPT')).length
+            };
+
+            Object.keys(stats).forEach(key => {
+                const el = document.getElementById(key);
+                const target = stats[key];
+                if (animate && target > 0) {
+                    animateCounter(el, target);
+                } else {
+                    el.textContent = target;
+                }
+            });
+        }
+
+        function animateCounter(element, target) {
+            const duration = 800;
+            const start = parseInt(element.textContent) || 0;
+            const increment = (target - start) / (duration / 16);
+            let current = start;
+            
+            element.classList.add('counting');
+            
+            const timer = setInterval(() => {
+                current += increment;
+                if ((increment > 0 && current >= target) || (increment < 0 && current <= target)) {
+                    element.textContent = target;
+                    element.classList.remove('counting');
+                    clearInterval(timer);
+                } else {
+                    element.textContent = Math.round(current);
+                }
+            }, 16);
+        }
+
+        // ===== IMPORT / EXPORT =====
+        function exportJSON() {
+            const projects = getProjects();
+            if (projects.length === 0) {
+                showToast('No projects to export', 'error');
+                return;
+            }
+            const blob = new Blob([JSON.stringify(projects, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `ai-projects-${new Date().toISOString().split('T')[0]}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+            showToast('Exported successfully!', 'success');
+        }
+
+        function importJSON(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                try {
+                    const imported = JSON.parse(e.target.result);
+                    if (!Array.isArray(imported)) throw new Error('Invalid format');
+
+                    const existing = getProjects();
+                    const existingIds = new Set(existing.map(p => p.id));
+                    let added = 0;
+
+                    imported.forEach(p => {
+                        if (!existingIds.has(p.id)) {
+                            existing.unshift(p);
+                            added++;
+                        }
+                    });
+
+                    saveProjects(existing);
+                    renderProjects();
+                    updateStats();
+                    showToast(`Imported ${added} new project(s)`, 'success');
+                } catch {
+                    showToast('Invalid JSON file', 'error');
+                }
+            };
+            reader.readAsText(file);
+            event.target.value = '';
+        }
+
+        // ===== UTILITIES =====
+        function escapeHtml(str) {
+            if (!str) return '';
+            const div = document.createElement('div');
+            div.textContent = str;
+            return div.innerHTML;
+        }
+
+        function formatDate(dateStr) {
+            if (!dateStr) return '';
+            const d = new Date(dateStr);
+            return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+        }
+
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.className = `toast ${type} show`;
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+
+        // ===== CONFETTI =====
+        function launchConfetti() {
+            const container = document.createElement('div');
+            container.className = 'confetti-container';
+            document.body.appendChild(container);
+
+            const colors = ['#0071ce', '#ffc220', '#28a745', '#dc3545', '#17a2b8', '#6f42c1'];
+            const shapes = ['square', 'circle'];
+
+            for (let i = 0; i < 50; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.style.left = Math.random() * 100 + '%';
+                confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.borderRadius = shapes[Math.floor(Math.random() * shapes.length)] === 'circle' ? '50%' : '0';
+                confetti.style.width = (Math.random() * 10 + 5) + 'px';
+                confetti.style.height = confetti.style.width;
+                confetti.style.animation = `confetti-fall ${Math.random() * 2 + 1.5}s ease-out forwards`;
+                confetti.style.animationDelay = Math.random() * 0.5 + 's';
+                container.appendChild(confetti);
+            }
+
+            setTimeout(() => container.remove(), 4000);
+        }
+
+        // ===== LEADERBOARD =====
+        function renderLeaderboard() {
+            const projects = getProjects();
+            const container = document.getElementById('leaderboardList');
+
+            if (projects.length === 0) {
+                container.innerHTML = '<p class="no-projects">No contributions yet. Be the first!</p>';
+                return;
+            }
+
+            // Count projects per team member
+            const counts = {};
+            projects.forEach(p => {
+                const name = p.teamMember;
+                if (!counts[name]) {
+                    counts[name] = { name, department: p.department, count: 0 };
+                }
+                counts[name].count++;
+            });
+
+            // Sort by count descending
+            const sorted = Object.values(counts).sort((a, b) => b.count - a.count);
+
+            container.innerHTML = sorted.map((person, idx) => {
+                let rankClass = '';
+                if (idx === 0) rankClass = 'gold';
+                else if (idx === 1) rankClass = 'silver';
+                else if (idx === 2) rankClass = 'bronze';
+
+                return `
+                    <div class="leaderboard-item">
+                        <div class="leaderboard-rank ${rankClass}">${idx + 1}</div>
+                        <div class="leaderboard-info">
+                            <div class="leaderboard-name">${escapeHtml(person.name)}</div>
+                            <div class="leaderboard-dept">${escapeHtml(person.department)}</div>
+                        </div>
+                        <div style="text-align: right;">
+                            <div class="leaderboard-count">${person.count}</div>
+                            <div class="leaderboard-label">project${person.count !== 1 ? 's' : ''}</div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // ===== PDF EXPORT =====
+        function exportPDF() {
+            const projects = getProjects();
+            if (projects.length === 0) {
+                showToast('No projects to export', 'error');
+                return;
+            }
+
+            // Create a new window for the PDF content
+            const printWindow = window.open('', '_blank');
+            const today = new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+
+            const html = `
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <title>AI Implementation Report</title>
+                    <style>
+                        * { margin: 0; padding: 0; box-sizing: border-box; }
+                        body { font-family: 'Segoe UI', Tahoma, sans-serif; padding: 40px; color: #333; }
+                        .header { text-align: center; margin-bottom: 40px; padding-bottom: 20px; border-bottom: 3px solid #0071ce; }
+                        .header h1 { color: #004c91; font-size: 24px; margin-bottom: 8px; }
+                        .header p { color: #666; }
+                        .stats { display: flex; justify-content: center; gap: 40px; margin-bottom: 40px; }
+                        .stat { text-align: center; }
+                        .stat-num { font-size: 32px; font-weight: bold; color: #0071ce; }
+                        .stat-label { font-size: 12px; color: #666; text-transform: uppercase; }
+                        .project { margin-bottom: 24px; padding: 20px; border: 1px solid #e9ecef; border-left: 4px solid #0071ce; border-radius: 8px; page-break-inside: avoid; }
+                        .project h3 { color: #004c91; margin-bottom: 8px; }
+                        .project-meta { color: #666; font-size: 14px; margin-bottom: 12px; }
+                        .project-detail { margin-bottom: 8px; line-height: 1.5; }
+                        .project-detail strong { color: #444; }
+                        .tags { margin: 12px 0; }
+                        .tag { display: inline-block; background: #0071ce; color: white; padding: 2px 8px; border-radius: 12px; font-size: 11px; margin-right: 4px; }
+                        .footer { text-align: center; margin-top: 40px; padding-top: 20px; border-top: 1px solid #e9ecef; color: #666; font-size: 12px; }
+                        @media print { body { padding: 20px; } }
+                    </style>
+                </head>
+                <body>
+                    <div class="header">
+                        <h1>Corporate Functions AI Implementation Report</h1>
+                        <p>Generated on ${today}</p>
+                    </div>
+                    <div class="stats">
+                        <div class="stat">
+                            <div class="stat-num">${projects.length}</div>
+                            <div class="stat-label">Total Projects</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-num">${projects.filter(p => p.status === 'Active').length}</div>
+                            <div class="stat-label">Active</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-num">${projects.filter(p => (p.tools || []).includes('Code Puppy')).length}</div>
+                            <div class="stat-label">Code Puppy</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-num">${projects.filter(p => (p.tools || []).includes('ChatGPT')).length}</div>
+                            <div class="stat-label">ChatGPT</div>
+                        </div>
+                    </div>
+                    ${projects.map(p => `
+                        <div class="project">
+                            <h3>${escapeHtml(p.projectName)}</h3>
+                            <div class="project-meta">${escapeHtml(p.teamMember)} • ${escapeHtml(p.department)} • ${formatDate(p.dateImplemented)}</div>
+                            <div class="tags">
+                                <span class="tag">${escapeHtml(p.status || 'Active')}</span>
+                                ${(p.tools || []).map(t => `<span class="tag">${escapeHtml(t)}</span>`).join('')}
+                            </div>
+                            <div class="project-detail"><strong>Problem:</strong> ${escapeHtml(p.problemStatement)}</div>
+                            <div class="project-detail"><strong>Solution:</strong> ${escapeHtml(p.solutionDescription)}</div>
+                            ${p.timeSaved ? `<div class="project-detail"><strong>Time Saved:</strong> ${escapeHtml(p.timeSaved)}</div>` : ''}
+                            ${p.outcomes ? `<div class="project-detail"><strong>Outcomes:</strong> ${escapeHtml(p.outcomes)}</div>` : ''}
+                        </div>
+                    `).join('')}
+                    <div class="footer">
+                        Corporate Functions AI Implementation Tracker • Walmart Inc.
+                    </div>
+                </body>
+                </html>
+            `;
+
+            printWindow.document.write(html);
+            printWindow.document.close();
+            printWindow.onload = () => {
+                printWindow.print();
+            };
+            showToast('PDF report generated!', 'success');
+        }
+
+        // Keyboard accessibility for modal
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeDeleteModal();
+        });
+
+        document.getElementById('deleteModal').addEventListener('click', (e) => {
+            if (e.target.id === 'deleteModal') closeDeleteModal();
+        });
+    </script>
+</body>
+</html>
